@@ -27,12 +27,13 @@ TEST(barebones, cista)
 
     BasicStruct output{*cista::deserialize<BasicStruct>(bytes)};
 
-    for (auto& byte : bytes)
-    {
-        std::cout << ", ";
-        std::cout << std::hex << int(byte);
+    // TODO Refactor into byte print function
+    //for (auto& byte : bytes)
+    //{
+    //    std::cout << ", ";
+    //    std::cout << std::hex << int(byte);
 
-    }
+    //}
 
     EXPECT_EQ(output.integer, input.integer);
 }
@@ -55,12 +56,13 @@ TEST(barebones, cistaCut)
 
     BasicStruct output{*cista::deserialize<BasicStruct>(bytes)};
 
-    for (auto& byte : bytes)
-    {
-        std::cout << ", ";
-        std::cout << std::hex << int(byte);
+    // TODO: Refactor into byte print function
+    //for (auto& byte : bytes)
+    //{
+    //    std::cout << ", ";
+    //    std::cout << std::hex << int(byte);
 
-    }
+    //}
 
     EXPECT_EQ(output.integer, input.integer);
 }
