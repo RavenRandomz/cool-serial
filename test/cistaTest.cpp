@@ -36,3 +36,31 @@ TEST(barebones, cista)
 
     EXPECT_EQ(output.integer, input.integer);
 }
+
+TEST(barebones, cistaCut)
+{
+    struct BasicStruct
+    {
+        int integer;
+    };
+
+    BasicStruct input
+    {
+        .integer = 123234,
+    };
+
+
+
+    std::vector<unsigned char> bytes{cista::serialize(input)};
+
+    BasicStruct output{*cista::deserialize<BasicStruct>(bytes)};
+
+    for (auto& byte : bytes)
+    {
+        std::cout << ", ";
+        std::cout << std::hex << int(byte);
+
+    }
+
+    EXPECT_EQ(output.integer, input.integer);
+}
