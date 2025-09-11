@@ -2,6 +2,8 @@
 #define COOL_SERIAL_HEADER_SECTION_HPP
 
 #include "bytes.hpp"
+#include "cista_protocol.hpp"
+
 #include "cista/cista.h"
 #include "cppcrc/cppcrc.h"
 
@@ -61,19 +63,24 @@ namespace coolSerial
                 CRC8::CRC8::calc(&serializedInfo[0], serializedInfo.size())
             };
 
+            // Append Crc
             serializedInfo.push_back(dataInfoCrc);
+
+            // Prevent overflow error by adding required Cista struct ending
+            serializedInfo.push_back(kCistaStructEnding);
+
             serialized_ = std::move(serializedInfo);
         }
 
         /**
          * Returns serialized info 
          */
-        const Bytes& getSerialized() const
+        const Bytes getSerialized() const
         {
             return serialized_;
         }
     private:
         Bytes serialized_;
     };
-};
+}
 #endif
