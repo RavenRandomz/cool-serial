@@ -1,0 +1,3 @@
+[submodule "include/cppcrc"]
+	path = include/cppcrc
+	url = https://github.com/DarrenLevine/cppcrc.git
