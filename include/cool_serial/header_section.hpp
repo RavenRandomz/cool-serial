@@ -1,8 +1,10 @@
 #ifndef COOL_SERIAL_HEADER_SECTION_HPP
 #define COOL_SERIAL_HEADER_SECTION_HPP
 
-#include "byte.hpp"
+#include "bytes.hpp"
+#include "cista/cista.h"
 #include "cppcrc/cppcrc.h"
+
 #include <cstdint>
 
 namespace coolSerial
@@ -40,9 +42,19 @@ namespace coolSerial
     class HeaderSection
     {
     public:
-        HeaderSection(uint8_t messageType, uint16_t dataLength);
-    private:
-    };
+        HeaderSection(const DataInfo& dataInfo)
+        {
+            Bytes serializedInfo{cista::serialize(dataInfo)};
+            const uint8_t dataInfoCrc
+            {
+                CRC8::CRC8::calc(&serializedInfo[0], serializedInfo.size())
+            };
 
+            serializedInfo.push_back(dataInfoCrc);
+            serialized_ = std::move(serializedInfo);
+        }
+    private:
+        Bytes serialized_;
+    };
 };
 #endif
