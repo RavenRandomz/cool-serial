@@ -42,9 +42,20 @@ namespace coolSerial
     class HeaderSection
     {
     public:
+        /**
+         * Generates the serialized version of the HeaderSection
+         * with complete crc.
+         *
+         * Because the serialized form of the dataInfo needs to be
+         * serialized to calculate the crc8, it was decided
+         * to generate the crc8
+         */
         HeaderSection(const DataInfo& dataInfo)
         {
             Bytes serializedInfo{cista::serialize(dataInfo)};
+
+            // HACK: automatic casting of unsigned char to uint8_t
+            // seems to be well-defined, but if there are glitches, look here
             const uint8_t dataInfoCrc
             {
                 CRC8::CRC8::calc(&serializedInfo[0], serializedInfo.size())
@@ -52,6 +63,14 @@ namespace coolSerial
 
             serializedInfo.push_back(dataInfoCrc);
             serialized_ = std::move(serializedInfo);
+        }
+
+        /**
+         * Returns serialized info 
+         */
+        const Bytes& getSerialized() const
+        {
+            return serialized_;
         }
     private:
         Bytes serialized_;
