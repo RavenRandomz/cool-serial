@@ -35,19 +35,19 @@ namespace coolSerial
 
         Bytes testBytes{inputHeader.getSerialized()};
 
-        for(auto& byte : testBytes)
-        {
-            std::cout << std::hex << int(byte);
-            std::cout << ", ";
-        }
+        //for(auto& byte : testBytes)
+        //{
+        //    std::cout << std::hex << int(byte);
+        //    std::cout << ", ";
+        //}
 
-        std::cout << '\n';
+        //std::cout << '\n';
 
-        for(auto& byte : expectedSerialized)
-        {
-            std::cout << std::hex << int(byte);
-            std::cout << ", ";
-        }
+        //for(auto& byte : expectedSerialized)
+        //{
+        //    std::cout << std::hex << int(byte);
+        //    std::cout << ", ";
+        //}
 
 
         // Attempt to deserialize inputHeader
