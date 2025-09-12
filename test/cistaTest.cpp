@@ -36,6 +36,7 @@ TEST(barebones, cista)
     //}
 
     EXPECT_EQ(output.integer, input.integer);
+
 }
 
 TEST(barebones, cistaCut)
