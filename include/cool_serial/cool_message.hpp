@@ -50,7 +50,10 @@ namespace coolSerial
             messageInfo_.insert(messageInfo_.end(), std::begin(data), std::end(data));
         }
 
-        Bytes getSerialMessage() const
+        /**
+         * Returns CoolSerial frame in the form of bytes
+         */
+        Bytes getFrame() const
         {
             return messageInfo_;
         }
