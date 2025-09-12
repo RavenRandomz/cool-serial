@@ -7,9 +7,19 @@
 #include <cassert>
 #include <limits>
 #include <iostream>
+#include <vector>
 
 namespace coolSerial
 {
+    /**
+     * Contains data to be passed onto a handler 
+     */
+    struct CoolMessageData
+    {
+        Byte dataType;
+        Bytes data;
+    };
+
     /**
      * Preliminary class 
      *
