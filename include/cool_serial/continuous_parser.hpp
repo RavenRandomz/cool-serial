@@ -40,7 +40,6 @@ namespace coolSerial
             void update() override
             {
 
-                std::cout << "Update Message";
                 parser_.setCurrentMessage
                     (
                         CoolMessageData
@@ -75,7 +74,6 @@ namespace coolSerial
 
             void update() override
             {
-                std::cout << "Start of Frame";
                 //Consider having an upper limit
                 while(parser_.byteAvailable())
                 {
@@ -106,12 +104,10 @@ namespace coolSerial
 
             void update() override
             {
-                std::cout << "Data Parse";
                 while(parser_.byteAvailable())
                 {
                     // Current byte is being proccessed so it doesn't count
                     --bytesRemaining_;
-                    std::cout << "Bytes remaining: " << bytesRemaining_ << '\n';
                     if(bytesRemaining_ > 0)
                     {
                         dataBytes_.push_back(parser_.getNextPoppedByte());
@@ -134,7 +130,6 @@ namespace coolSerial
             {
                 dataInfo_ = dataInfo;
                 bytesRemaining_ = dataInfo.dataLength;
-                std::cout << "bytes reminaing: " << bytesRemaining_ << '\n';
             }
         private:
             ContinuousParser& parser_;
@@ -155,7 +150,6 @@ namespace coolSerial
 
             void update() override
             {
-                std::cout << "Header Update";
                 // Potentially sus
                 const HeaderBytes kHeaderBytes
                 {
