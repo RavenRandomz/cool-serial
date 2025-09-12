@@ -44,14 +44,14 @@ namespace coolSerial::coolMessageTest
 
         ByteQueue testQueue{std::deque<Byte>{kMessageFrame.begin(), kMessageFrame.end()}};
 
+
         // Test the actual parser
         ContinuousParser parser{testQueue};
         parser.update();
-        CoolMessageData messageData{parser.getCurrentMessage()};
-        std::cout << "Sanity";
+        CoolMessageData recoveredData{parser.getCurrentMessage()};
 
-        EXPECT_EQ(messageData.dataType, Byte{0});
-        EXPECT_EQ(messageData.data, kMessageData);
+        EXPECT_EQ(recoveredData.dataType, Byte{0});
+        EXPECT_EQ(recoveredData.data, kMessageData);
     }
 }
 
