@@ -44,7 +44,7 @@ namespace coolSerial
             const HeaderBytes kHeaderBytes{kHeader.getSerialized()}; 
 
             // Append header to beginning of transmission
-            messageInfo_.insert(messageInfo_.begin(), std::begin(kHeaderBytes), std::end(kHeaderBytes));
+            messageInfo_.insert(messageInfo_.end(), std::begin(kHeaderBytes), std::end(kHeaderBytes));
 
             // Append data
             messageInfo_.insert(messageInfo_.end(), std::begin(data), std::end(data));
