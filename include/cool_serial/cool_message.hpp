@@ -4,7 +4,9 @@
 #include "bytes.hpp"
 #include "header_section.hpp"
 
+#include <cassert>
 #include <limits>
+#include <iostream>
 
 namespace coolSerial
 {
@@ -18,6 +20,7 @@ namespace coolSerial
      */
     class CoolMessage
     {
+    public:
         /// 137 is a cool approximation of a fundamental universal constant :D
         /// Obscura aside, this is always at the beginning of a message
         static constexpr Byte kStartOfFrame{137};
@@ -70,7 +73,7 @@ namespace coolSerial
         Bytes messageInfo_{};
     };
 
-    std::ostream& operator<<(std::ostream& os, const CoolMessage& message)
+    inline std::ostream& operator<<(std::ostream& os, const CoolMessage& message)
     {
         os << "[ ";
         for(auto& byte : message.messageInfo_)
