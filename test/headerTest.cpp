@@ -28,6 +28,28 @@ namespace coolSerial
         EXPECT_EQ(expectedInfo.dataType, kRecoveredHeaderData.dataInfo.dataType);
         EXPECT_EQ(expectedInfo.getCrc(), kRecoveredHeaderData.dataInfoCrc);
     }
+
+    // This ensures that the CRC8 byte from recovered Header Data works
+    TEST(header, headerDataVerification)
+    {
+        // Create test data
+        constexpr DataInfo expectedInfo
+        {
+            .dataLength = 10,
+            .dataType = 1
+        };
+
+        const HeaderBytes kSerialized{HeaderSection::generateSerialized(expectedInfo)};
+
+        const HeaderData kRecoveredHeaderData
+        {
+            HeaderSection::deserializeBytes(kSerialized)
+        };
+
+
+        // Check for match from deserialized header data
+        EXPECT_TRUE(kRecoveredHeaderData.isValid());
+    }
 }
 
 
