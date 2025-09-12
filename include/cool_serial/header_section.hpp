@@ -63,6 +63,15 @@ namespace coolSerial
     {
         DataInfo dataInfo;
         Byte dataInfoCrc; 
+
+        /**
+         * Check if the CRC8 byte matches the
+         * Data Info subsection CRC8
+         */
+        bool isValid() const
+        {
+            return dataInfo.getCrc() == dataInfoCrc;
+        }
     };
 
     /**
@@ -137,6 +146,8 @@ namespace coolSerial
         {
             return serialized_;
         }
+
+        
     private:
         HeaderBytes serialized_;
     };
