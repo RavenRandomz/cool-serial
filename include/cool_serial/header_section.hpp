@@ -12,6 +12,10 @@
 namespace coolSerial
 {
     constexpr Byte kStartOfFrame{137}; // Approximate fine structure constant :D
+    constexpr int kDataInfoBytes{3}; // Refer to Cool Serial Protocol
+                                       //
+    using HeaderBytes = std::array<Byte, 4>;
+    using DataInfoBytes = std::array<Byte, kDataInfoBytes>;
 
     /**
      * This is the portion of the header that determines how the data section
@@ -24,6 +28,26 @@ namespace coolSerial
     {
         std::uint16_t dataLength;
         std::uint8_t dataType;
+
+        DataInfoBytes serialize() const
+        {
+
+            const uint8_t firstLengthByte = (dataLength >> 8) & 0xFF;
+            const uint8_t secondLengthByte = (dataLength >> 0) & 0xFF;
+
+            // https://stackoverflow.com/questions/54255885/portable-way-of-splitting-n-byte-integer-into-single-bytes
+            // HACK: Copy initialization is required to bypass restriction on narrowing conversion
+            // Unsigned ints are well-defined across architectures
+            // DO NOT REFACTOR: These constants will be optimized away
+            DataInfoBytes bytes{firstLengthByte, secondLengthByte, dataType};
+            return bytes; 
+        }
+
+        Byte getCrc() const
+        {
+            const DataInfoBytes kSerialized{serialize()};
+            return CRC8::CRC8::calc(kSerialized.data(), kSerialized.size());
+        }
     };
 
     /**
@@ -41,9 +65,57 @@ namespace coolSerial
         Byte dataInfoCrc; 
     };
 
+    /**
+     * This stores the serialized portion of the header section.
+     */
     class HeaderSection
     {
     public:
+        /**
+         * Generate the serial information
+         */
+        static HeaderBytes generateSerialized(const DataInfo& dataInfo)
+        {
+            HeaderBytes bytes{};
+            const DataInfoBytes kSerializedDataInfo{dataInfo.serialize()};
+
+            //Access indicies 0 - 2
+            for(int i{0} ; i < kDataInfoBytes; ++i )
+            {
+                bytes[i] = kSerializedDataInfo[i];
+            }
+
+            bytes[3] = dataInfo.getCrc();
+            return bytes;
+        }
+
+        /**
+         * Generate the serial information
+         */
+        static HeaderData deserializeBytes(const HeaderBytes& bytes)
+        {
+
+            // https://stackoverflow.com/questions/54255885/portable-way-of-splitting-n-byte-integer-into-single-bytes
+            // HACK: Copy initialization is required to bypass restriction on narrowing conversion
+            // Unsigned ints are well-defined across architectures
+            // DO NOT REFACTOR: These constants will be optimized away
+            //
+
+            const uint16_t kDataLength{static_cast<uint16_t>(bytes[0] << 8 | bytes[1] << 0)};
+            const uint8_t kDataType{bytes[2]}; 
+            const Byte kCrc{bytes[3]};
+
+            return HeaderData
+            {
+                .dataInfo = 
+                {
+                    .dataLength = kDataLength,
+                    .dataType = kDataType,
+                },
+                .dataInfoCrc = kCrc
+            };
+        }
+
         /**
          * Generates the serialized version of the HeaderSection
          * with complete crc.
@@ -53,34 +125,20 @@ namespace coolSerial
          * to generate the crc8
          */
         HeaderSection(const DataInfo& dataInfo)
+            :
+            serialized_{generateSerialized(dataInfo)}
         {
-            Bytes serializedInfo{cista::serialize(dataInfo)};
-
-            // HACK: automatic casting of unsigned char to uint8_t
-            // seems to be well-defined, but if there are glitches, look here
-            const uint8_t dataInfoCrc
-            {
-                CRC8::CRC8::calc(&serializedInfo[0], serializedInfo.size())
-            };
-
-            // Append Crc
-            serializedInfo.push_back(dataInfoCrc);
-
-            // Prevent overflow error by adding required Cista struct ending
-            serializedInfo.push_back(kCistaStructEnding);
-
-            serialized_ = std::move(serializedInfo);
         }
 
         /**
          * Returns serialized info 
          */
-        const Bytes getSerialized() const
+        const HeaderBytes getSerialized() const
         {
             return serialized_;
         }
     private:
-        Bytes serialized_;
+        HeaderBytes serialized_;
     };
 }
 #endif
