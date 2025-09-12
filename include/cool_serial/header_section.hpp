@@ -1,12 +1,10 @@
 #ifndef COOL_SERIAL_HEADER_SECTION_HPP
 #define COOL_SERIAL_HEADER_SECTION_HPP
 
-#include "bytes.hpp"
-#include "cista_protocol.hpp"
-
-#include "cista/cista.h"
+#include "byte.hpp"
 #include "cppcrc/cppcrc.h"
 
+#include <array>
 #include <cstdint>
 
 namespace coolSerial
