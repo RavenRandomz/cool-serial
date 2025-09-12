@@ -39,6 +39,7 @@ namespace coolSerial
 
             void update() override
             {
+
                 parser_.setCurrentMessage
                     (
                         CoolMessageData
@@ -105,13 +106,15 @@ namespace coolSerial
             {
                 while(parser_.byteAvailable())
                 {
+                    // Current byte is being proccessed so it doesn't count
+                    --bytesRemaining_;
                     if(bytesRemaining_ > 0)
                     {
                         dataBytes_.push_back(parser_.getNextPoppedByte());
-                        --bytesRemaining_;
                     }
                     else
                     {
+                        dataBytes_.push_back(parser_.getNextPoppedByte());
                         parser_.setState(StateType::updateMessage);
                         updateMessage_.setDataType(dataInfo_.dataType);
                         updateMessage_.setData(std::move(dataBytes_));
