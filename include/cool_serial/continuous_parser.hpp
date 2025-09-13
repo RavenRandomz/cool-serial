@@ -106,24 +106,27 @@ namespace coolSerial
             {
                 while(parser_.byteAvailable())
                 {
+                    dataBytes_.push_back(parser_.getNextPoppedByte());
                     // Current byte is being proccessed so it doesn't count
                     --bytesRemaining_;
-                    if(bytesRemaining_ > 0)
+
+                    if(bytesRemaining_ == 0)
                     {
-                        dataBytes_.push_back(parser_.getNextPoppedByte());
-                    }
-                    else
-                    {
-                        dataBytes_.push_back(parser_.getNextPoppedByte());
-                        parser_.setState(StateType::updateMessage);
-                        updateMessage_.setDataType(dataInfo_.dataType);
-                        updateMessage_.setData(std::move(dataBytes_));
-                        // Add new data to prevent crash (potential)
-                        dataBytes_ = Bytes{};
-                        parser_.update();
+                        passToMessageUpdater();
                         break;
                     }
+
                 }
+            }
+
+            void passToMessageUpdater()
+            {
+                parser_.setState(StateType::updateMessage);
+                updateMessage_.setDataType(dataInfo_.dataType);
+                updateMessage_.setData(std::move(dataBytes_));
+                // Add new data to prevent crash (potential)
+                dataBytes_ = Bytes{};
+                parser_.update();
             }
 
             void setDataInfo(const DataInfo& dataInfo)
