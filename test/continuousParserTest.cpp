@@ -45,8 +45,6 @@ namespace coolSerial::coolParserTest
 
         Bytes kMessageFrame{message.getFrame()};
 
-        std::cout << message;
-
         const Bytes kMessageData{kMessageFrame.begin() + 5, kMessageFrame.end()};
         EXPECT_EQ(kMessageData, kDataBytes);
 
@@ -85,8 +83,6 @@ namespace coolSerial::coolParserTest
         CoolMessage message{std::move(kDataBytes), Byte{0}};
 
         Bytes kMessageFrame{message.getFrame()};
-
-        std::cout << message;
 
         const Bytes kMessageData{kMessageFrame.begin() + 5, kMessageFrame.end()};
         EXPECT_EQ(kMessageData, kDataBytes);
