@@ -229,6 +229,7 @@ namespace coolSerial
 
         void setCurrentMessage(const CoolMessageData& messageData)
         {
+            messageProcessed_ = false;
             currentMessage_ = messageData;
         }
 
@@ -236,6 +237,7 @@ namespace coolSerial
         {
             return currentMessage_;
         }
+
         bool byteAvailable()
         {
             return !byteQueue_.empty();
@@ -247,6 +249,28 @@ namespace coolSerial
             byteQueue_.pop();
             return kNext;
         }
+
+        /**
+         * Use this to keep track on whether or not you have a 
+         * new message.
+         *
+         * It is not guaranteed that a new message is obtained
+         * from every update() round
+         */
+        void reportMessageProcessed()
+        {
+            messageProcessed_ = true;
+        }
+
+        /**
+         * Returns whether or not the current message
+         * has been processed
+         */
+        bool currentMessageProcessed() const
+        {
+            return messageProcessed_;
+        }
+
     private:
 
         // State handlers
@@ -258,6 +282,7 @@ namespace coolSerial
         ByteQueue& byteQueue_;
         State* state_{&startOfFrameSearch_};
         CoolMessageData currentMessage_{};
+        bool messageProcessed_{false};
     };
 }
 #endif
