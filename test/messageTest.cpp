@@ -34,7 +34,7 @@ namespace coolSerial::coolMessageTest
 
         const Bytes kMessageFrame{message.getFrame()};
 
-        std::cout << message;
+        // std::cout << message;
 
         const Bytes kMessageData{kMessageFrame.begin() + 5, kMessageFrame.end()};
         EXPECT_EQ(kMessageData, kDataBytes);

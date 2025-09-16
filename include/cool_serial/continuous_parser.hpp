@@ -106,24 +106,27 @@ namespace coolSerial
             {
                 while(parser_.byteAvailable())
                 {
+                    dataBytes_.push_back(parser_.getNextPoppedByte());
                     // Current byte is being proccessed so it doesn't count
                     --bytesRemaining_;
-                    if(bytesRemaining_ > 0)
+
+                    if(bytesRemaining_ == 0)
                     {
-                        dataBytes_.push_back(parser_.getNextPoppedByte());
-                    }
-                    else
-                    {
-                        dataBytes_.push_back(parser_.getNextPoppedByte());
-                        parser_.setState(StateType::updateMessage);
-                        updateMessage_.setDataType(dataInfo_.dataType);
-                        updateMessage_.setData(std::move(dataBytes_));
-                        // Add new data to prevent crash (potential)
-                        dataBytes_ = Bytes{};
-                        parser_.update();
+                        passToMessageUpdater();
                         break;
                     }
+
                 }
+            }
+
+            void passToMessageUpdater()
+            {
+                parser_.setState(StateType::updateMessage);
+                updateMessage_.setDataType(dataInfo_.dataType);
+                updateMessage_.setData(std::move(dataBytes_));
+                // Add new data to prevent crash (potential)
+                dataBytes_ = Bytes{};
+                parser_.update();
             }
 
             void setDataInfo(const DataInfo& dataInfo)
@@ -150,16 +153,28 @@ namespace coolSerial
 
             void update() override
             {
-                // Potentially sus
-                const HeaderBytes kHeaderBytes
+                while(parser_.byteAvailable())
                 {
-                    parser_.getNextPoppedByte(),
-                    parser_.getNextPoppedByte(),
-                    parser_.getNextPoppedByte(),
-                    parser_.getNextPoppedByte()
-                };
 
-                const auto kHeaderData{HeaderSection::deserializeBytes(kHeaderBytes)};
+                    headerBytes_[headerByteIndex_] = parser_.getNextPoppedByte();
+                    std::cout << headerByteIndex_;
+
+                    if(headerByteIndex_ == kHeaderByteCountMaxIndex)
+                    {
+                        proccessHeaderBytes();
+                        break;
+                    }
+                    // Prepare next interation for next index
+                    ++headerByteIndex_;
+                }
+            }
+
+            void proccessHeaderBytes()
+            {
+                // Reset for next iteration
+                headerByteIndex_ = 0;
+
+                 const auto kHeaderData{HeaderSection::deserializeBytes(headerBytes_)};
                 if (kHeaderData.isValid())
                 {
                     parser_.setState(StateType::dataParse);
@@ -173,7 +188,13 @@ namespace coolSerial
                     // Wait until next update
                 }
             }
+
+
         private:
+            static const int kHeaderByteCountMaxIndex{3};
+
+            int headerByteIndex_{0};
+            HeaderBytes headerBytes_{};
             ContinuousParser& parser_; 
             DataParse& dataParse_;
         };
