@@ -99,18 +99,25 @@ namespace coolSerial::coolParserTest
         ByteQueue testQueue{};
         // Test the actual parser
         ContinuousParser parser{testQueue};
+
+        // Test if the message processed is false
+        parser.reportMessageProcessed();
         addBytesToByteQueue(partialHeader, testQueue);
         parser.update();
+        EXPECT_TRUE(parser.currentMessageProcessed());
 
         addBytesToByteQueue(restOfHeader, testQueue);
         parser.update();
+        EXPECT_TRUE(parser.currentMessageProcessed());
 
         addBytesToByteQueue(halfOfData, testQueue);
         parser.update();
+        EXPECT_TRUE(parser.currentMessageProcessed());
 
         addBytesToByteQueue(finalHalfOfData, testQueue);
         parser.update();
 
+        EXPECT_FALSE(parser.currentMessageProcessed());
         CoolMessageData recoveredData{parser.getCurrentMessage()};
 
         EXPECT_EQ(recoveredData.dataType, Byte{0});
