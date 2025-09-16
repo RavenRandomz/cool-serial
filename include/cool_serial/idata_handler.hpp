@@ -10,7 +10,7 @@ namespace coolSerial
         /**
          * Trigger a handler's action
          */
-        virtual void handleData(Bytes& bytes) = 0;
+        virtual void handleData(const Bytes& bytes) = 0;
         virtual ~IDataHandler() {}
     };
 }
