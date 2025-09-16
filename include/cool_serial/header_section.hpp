@@ -108,7 +108,12 @@ namespace coolSerial
             // DO NOT REFACTOR: These constants will be optimized away
             //
 
-            const uint16_t kDataLength{static_cast<uint16_t>(bytes[0] << 8 | bytes[1] << 0)};
+            const uint16_t kDataLength
+            {
+                static_cast<uint16_t>(
+                          (uint16_t) bytes[0] << 8 
+                        | (uint16_t) bytes[1] << 0)
+            };
             const uint8_t kDataType{bytes[2]}; 
             const Byte kCrc{bytes[3]};
 
