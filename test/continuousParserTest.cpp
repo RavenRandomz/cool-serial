@@ -123,6 +123,55 @@ namespace coolSerial::coolParserTest
         EXPECT_EQ(recoveredData.dataType, Byte{0});
         EXPECT_EQ(recoveredData.data, kMessageData);
     }
+
+    TEST(ContinuousParser, ReallyFragmentedDeserialization)
+    {
+        // Construct data
+        struct TestStruct
+        {
+            float x;
+            float y;
+            double z;
+        };
+
+        TestStruct data
+        {
+            .x = 2.234,
+            .y = -345345.234234,
+            .z = 34535.345345
+        };
+
+        Bytes kDataBytes{cista::serialize(data)};
+
+        // The 3rd header section byte (index 3) must equal 0
+        CoolMessage message{std::move(kDataBytes), Byte{0}};
+
+        Bytes kMessageFrame{message.getFrame()};
+
+        const Bytes kMessageData{kMessageFrame.begin() + 5, kMessageFrame.end()};
+        EXPECT_EQ(kMessageData, kDataBytes);
+
+        ByteQueue testQueue{std::deque<Byte>{kMessageFrame.begin(), kMessageFrame.end()}};
+
+
+        ByteQueue simulatedQueue{};
+        // Test the actual parser
+        ContinuousParser parser{simulatedQueue};
+
+        while(!testQueue.empty())
+        {
+            simulatedQueue.push(testQueue.front());
+            testQueue.pop();
+            parser.update();
+        }
+
+        CoolMessageData recoveredData{parser.getCurrentMessage()};
+
+        EXPECT_EQ(recoveredData.dataType, Byte{0});
+        EXPECT_EQ(recoveredData.data, kMessageData);
+    }
+
+
 }
 
 
