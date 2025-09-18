@@ -39,6 +39,23 @@ namespace coolSerial::coolMessageTest
         const Bytes kMessageData{kMessageFrame.begin() + 5, kMessageFrame.end()};
         EXPECT_EQ(kMessageData, kDataBytes);
     }
+
+    TEST(CoolMessage, CustomSerialization)
+    {
+        uint32_t test {98973449};
+        Bytes kDataBytes{cista::serialize(test)};
+
+        // The 3rd header section byte (index 3) must equal 0
+        CoolMessage message{std::move(kDataBytes), Byte{255}};
+
+        const Bytes kMessageFrame{message.getFrame()};
+
+
+        std::cout << message;
+
+        const Bytes kMessageData{kMessageFrame.begin() + 5, kMessageFrame.end()};
+        EXPECT_EQ(kMessageData, kDataBytes);
+    }
 }
 
 
