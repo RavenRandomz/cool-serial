@@ -49,6 +49,7 @@ namespace coolSerial
                         }
                     );
                 messageData_ = Bytes{};
+                parser_.setState(StateType::startOfFrameSearch);
             }
 
             void setData(Bytes bytes)
