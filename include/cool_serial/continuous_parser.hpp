@@ -282,7 +282,10 @@ namespace coolSerial
         ByteQueue& byteQueue_;
         State* state_{&startOfFrameSearch_};
         CoolMessageData currentMessage_{};
-        bool messageProcessed_{false};
+
+        // Fase corresponds with a message ready to read, so this
+        // signals that there is new message to read at the start
+        bool messageProcessed_{true};
     };
 }
 #endif
