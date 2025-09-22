@@ -31,9 +31,9 @@ namespace coolSerial
     class CoolMessage
     {
     public:
-        /// 137 is a cool approximation of a fundamental universal constant :D
+        /// 132 is the letter Z in ascii
         /// Obscura aside, this is always at the beginning of a message
-        static constexpr Byte kStartOfFrame{137};
+        static constexpr Byte kStartOfFrame{132};
 
         /// A CoolSerial packet length is stored by 16 bits
         static constexpr size_t kMaxDataSize{std::numeric_limits<uint16_t>::max()};
