@@ -5,7 +5,7 @@ UART's scope is to merely transmit these serialized objects in a minimal yet err
 
 Header Section
 ---------------
-0. Start of Frame: 0xAE
+0. Start of Frame: 132 - Z in ascii
 1. Length uint_16 most significant byte
 2. Length uint_16 byte least significat
 3. Message type byte : types defined by user
