@@ -91,7 +91,7 @@ namespace coolSerial::coolParserTest
         // A partial buffer will be fed each time
         // [ 89, 0, 10, 0, 57, db, f9, e, 40, 27, a0, a8, c8, 1b, f5, 10, d, eb, dc, e0, 40, ]
         // Partial header with SOF
-        Bytes partialHeader{ 0x89, 0x0, 0x10};
+        Bytes partialHeader{ 0x84, 0x0, 0x10};
         Bytes restOfHeader{ 0x0, 0x57};
         Bytes halfOfData{ 0xdb, 0xf9, 0xe, 0x40};
         Bytes finalHalfOfData{0x27, 0xa0, 0xa8, 0xc8, 0x1b, 0xf5, 0x10, 0xd, 0xeb, 0xdc, 0xe0, 0x40};
