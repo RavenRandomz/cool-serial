@@ -13,6 +13,13 @@ namespace coolSerial
         {
             return !empty();
         }
+
+        Byte getNextPoppedByte()
+        {
+            const Byte kNext{front()};
+            pop();
+            return kNext;
+        }
     };
 }
 #endif
