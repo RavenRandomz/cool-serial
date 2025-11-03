@@ -8,7 +8,8 @@ namespace coolSerial
 {
     class StartOfFrameFoundListenerMock : public StartOfFrameFoundListener
     {
-        MOCK_METHOD(void, startofFrameFound, (), (override));
+    public:
+        MOCK_METHOD(void, startOfFrameFound, (), (override));
     };
 }
 #endif

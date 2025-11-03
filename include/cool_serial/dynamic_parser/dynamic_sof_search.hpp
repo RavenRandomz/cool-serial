@@ -49,7 +49,7 @@ namespace coolSerial
             const Byte kNext{queue_.getNextPoppedByte()};
             if(kNext == CoolMessage::kStartOfFrame)
             {
-                frameFoundListener_.startofFrameFound();
+                frameFoundListener_.startOfFrameFound();
             }
         }
     };

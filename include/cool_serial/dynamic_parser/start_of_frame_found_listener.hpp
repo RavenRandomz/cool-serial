@@ -5,7 +5,7 @@ namespace coolSerial
     class StartOfFrameFoundListener
     {
     public:
-        virtual void startofFrameFound() = 0;
+        virtual void startOfFrameFound() = 0;
         virtual ~StartOfFrameFoundListener() {}
     };
 }
