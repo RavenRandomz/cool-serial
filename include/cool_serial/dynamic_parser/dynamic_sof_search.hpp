@@ -7,56 +7,54 @@
 
 namespace coolSerial
 {
-    /**
-     * This can continuously search for the coolSerial SOF
-     * Upon finding the SOF, it informs a single listener.
-     *
-     * (SOF: Start of Frame) Look up serial protocols such as RefSerial
-     * or CoolSerial, etc. for more info
-     *
-     * Every time update() is called, it checks all available
-     * bytes in the queue until the SOF is located. No more bytes
-     * will be popped otherwise.
-     *
-     * Due to performance reasons, there is only one listener.
-     * A listener adapter can be informed which would them pass
-     * the call towards a collection of listeners if need be.
-     *
-     * WARNING: This will dump the non-SOF bytes in the ByteQueue when searching
-     * for the SOF byte.
-     */
-    class DynamicSofSearch
+/**
+ * This can continuously search for the coolSerial SOF
+ * Upon finding the SOF, it informs a single listener.
+ *
+ * (SOF: Start of Frame) Look up serial protocols such as RefSerial
+ * or CoolSerial, etc. for more info
+ *
+ * Every time update() is called, it checks all available
+ * bytes in the queue until the SOF is located. No more bytes
+ * will be popped otherwise.
+ *
+ * Due to performance reasons, there is only one listener.
+ * A listener adapter can be informed which would them pass
+ * the call towards a collection of listeners if need be.
+ *
+ * WARNING: This will dump the non-SOF bytes in the ByteQueue when searching
+ * for the SOF byte.
+ */
+class DynamicSofSearch
+{
+public:
+    DynamicSofSearch(
+        ByteQueue& queue,
+        StartOfFrameFoundListener& listener
+    ):
+        queue_{queue},
+        frameFoundListener_{listener}
     {
-    public:
-        DynamicSofSearch(
-            ByteQueue& queue,
-            StartOfFrameFoundListener& listener
-        ):
-            queue_{queue},
-            frameFoundListener_{listener}
-            
-        {
-        }
+    }
 
-        void update()
+    void update()
+    {
+        while(queue_.byteAvailable())
         {
-            //Consider having an upper limit
-            while(queue_.byteAvailable())
+            const Byte kNext{queue_.getNextPoppedByte()};
+            if(kNext == CoolMessage::kStartOfFrame)
             {
-                const Byte kNext{queue_.getNextPoppedByte()};
-                if(kNext == CoolMessage::kStartOfFrame)
-                {
-                    frameFoundListener_.startOfFrameFound();
+                frameFoundListener_.startOfFrameFound();
 
-                    // The next bytes are likely a header
-                    // avoid dumping header information
-                    break;
-                }
+                // The next bytes are likely a header
+                // avoid dumping header information
+                break;
             }
         }
-    private:
-        ByteQueue& queue_;
-        StartOfFrameFoundListener& frameFoundListener_;
-    };
+    }
+private:
+    ByteQueue& queue_;
+    StartOfFrameFoundListener& frameFoundListener_;
+};
 }
 #endif
