@@ -22,7 +22,7 @@ namespace coolSerial
      * A listener adapter can be informed which would them pass
      * the call towards a collection of listeners if need be.
      *
-     * WARNIG: This will dump the non-SOF bytes in the ByteQueue when searching
+     * WARNING: This will dump the non-SOF bytes in the ByteQueue when searching
      * for the SOF byte.
      */
     class DynamicSofSearch
