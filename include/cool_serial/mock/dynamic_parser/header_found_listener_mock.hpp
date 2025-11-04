@@ -9,7 +9,6 @@ namespace coolSerial
 class HeaderFoundListenerMock : public HeaderFoundListener
 {
 public:
-    
     MOCK_METHOD(void, headerFound, (const HeaderSection& header), (override));
 };
 }
