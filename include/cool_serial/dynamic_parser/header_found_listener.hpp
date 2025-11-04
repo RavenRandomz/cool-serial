@@ -8,7 +8,7 @@ namespace coolSerial
     class HeaderFoundListener
     {
     public:
-        virtual void headerFound(const HeaderSection& header) = 0;
+        virtual void headerFound(const HeaderData& headerData) = 0;
         virtual ~HeaderFoundListener() {}
     };
 }
