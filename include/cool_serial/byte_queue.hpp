@@ -9,6 +9,8 @@ namespace coolSerial
     class ByteQueue : public std::queue<Byte>
     {
     public:
+        using std::queue<Byte>::queue;
+
         bool byteAvailable() const
         {
             return !empty();
