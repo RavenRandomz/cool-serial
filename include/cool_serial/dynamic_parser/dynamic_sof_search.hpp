@@ -43,21 +43,20 @@ namespace coolSerial
             //Consider having an upper limit
             while(queue_.byteAvailable())
             {
-                sofListenerInformCheck();
+                const Byte kNext{queue_.getNextPoppedByte()};
+                if(kNext == CoolMessage::kStartOfFrame)
+                {
+                    frameFoundListener_.startOfFrameFound();
+
+                    // The next bytes are likely a header
+                    // avoid dumping header information
+                    break;
+                }
             }
         }
     private:
         ByteQueue& queue_;
         StartOfFrameFoundListener& frameFoundListener_;
-
-        void sofListenerInformCheck()
-        {
-            const Byte kNext{queue_.getNextPoppedByte()};
-            if(kNext == CoolMessage::kStartOfFrame)
-            {
-                frameFoundListener_.startOfFrameFound();
-            }
-        }
     };
 }
 #endif
