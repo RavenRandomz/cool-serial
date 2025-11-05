@@ -27,14 +27,7 @@ namespace coolSerial
         std::uint16_t dataLength;
         std::uint8_t dataType;
 
-        bool operator==(const DataInfo& other) const
-        {
-            return
-            (
-                (dataLength == other.dataLength)
-             && (dataType == other.dataType)
-            );
-        }
+        bool operator==(const DataInfo&) const = default;
 
         DataInfoBytes serialize() const
         {
@@ -80,14 +73,7 @@ namespace coolSerial
             return dataInfo.getCrc() == dataInfoCrc;
         }
 
-        bool operator==(const HeaderData &other) const
-        {
-            return
-            (
-                (dataInfo == other.dataInfo)
-                &&(dataInfoCrc == other.dataInfoCrc)
-            );
-        }
+        bool operator==(const HeaderData&) const = default;
     };
 
     /**
