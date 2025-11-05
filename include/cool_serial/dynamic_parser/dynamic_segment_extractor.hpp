@@ -3,6 +3,7 @@
 
 #include "cool_serial/byte_queue.hpp"
 #include "cool_serial/dynamic_parser/segment_found_listener.hpp"
+#include "cassert"
 
 namespace coolSerial
 {
@@ -24,6 +25,7 @@ public:
         listener_{listener},
         kMaxSegmentIndex_{segmentSize - 1} // Index starts at zero
     {
+        assert(segmentSize > 0 && "Invalid segment size");
         segmentBytes_.reserve(segmentSize);
     }
 
