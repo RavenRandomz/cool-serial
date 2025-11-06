@@ -22,11 +22,9 @@ public:
     DynamicSegmentExtractor(ByteQueue& queue, SegmentFoundListener& listener, int segmentSize)
         :
         queue_{queue},
-        listener_{listener},
-        kMaxSegmentIndex_{segmentSize - 1} // Index starts at zero
+        listener_{listener}
     {
-        assert(segmentSize > 0 && "Invalid segment size");
-        segmentBytes_.reserve(segmentSize);
+        setSegmentSize(segmentSize);
     }
 
     /**
@@ -50,7 +48,7 @@ public:
             // to the array
             segmentBytes_[extractedIndex_] = queue_.getNextPoppedByte();
 
-            if(extractedIndex_ == kMaxSegmentIndex_)
+            if(extractedIndex_ == maxSegmentIndex_)
             {
                 listener_.segmentFound(segmentBytes_);
                 resetExtraction();
@@ -59,6 +57,22 @@ public:
             // Prepare next interation for next index
             ++extractedIndex_;
         }
+    }
+
+    /**
+     * WARNING: setting segment size when
+     * midExtraction is true can lead
+     * to unexpected results
+     */
+    void setSegmentSize(int size)
+    {
+        assert(size >= 1 && "Invalid segment size");
+        maxSegmentIndex_ = size - 1;
+    }
+
+    bool isMidExtraction()
+    {
+        return extractedIndex_ != 0;
     }
 
     /**
@@ -73,7 +87,7 @@ public:
 private:
     ByteQueue& queue_; 
     SegmentFoundListener& listener_;
-    const int kMaxSegmentIndex_;
+    int maxSegmentIndex_{0};
 
     Bytes segmentBytes_{};
     int extractedIndex_{0};
