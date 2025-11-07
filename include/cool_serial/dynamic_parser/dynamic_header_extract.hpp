@@ -5,6 +5,10 @@
 #include "cool_serial/header_section.hpp"
 #include "cool_serial/dynamic_parser/header_found_listener.hpp"
 
+#include "cool_serial/dynamic_parser/dynamic_segment_extractor.hpp"
+#include "cool_serial/dynamic_parser/segment_found_listener.hpp"
+#include <cassert>
+
 namespace coolSerial
 {
 /**
@@ -18,7 +22,7 @@ namespace coolSerial
  * WARNING: This causes the byteQueue to dump each byte. This is a destructive
  * operation
  */
-class DynamicHeaderExtract
+class DynamicHeaderExtract : public SegmentFoundListener
 {
 public:
     DynamicHeaderExtract(ByteQueue& queue, HeaderFoundListener& listener)
@@ -27,31 +31,29 @@ public:
         listener_{listener}
     {}
 
-    void update()
+    /**
+     * The segmentExractor will call this function when it has located a segment.
+     */
+    void segmentFound(const Bytes& bytes) override
     {
-        while(queue_.byteAvailable())
-        {
-            // This is to optimize performance
-            // So instead of using a queue, it is directly written
-            // to the array
-            headerBytes_[headerByteIndex_] = queue_.getNextPoppedByte();
+        const HeaderBytes kHeaderBytes{
+            bytes[0],
+            bytes[1],
+            bytes[2],
+            bytes[3]
+        };
 
-            if(headerByteIndex_ == kHeaderByteCountMaxIndex)
-            {
-                proccessHeaderBytes();
-                resetHeaderExtraction();
-                break;
-            }
-            // Prepare next interation for next index
-            ++headerByteIndex_;
-        }
+        assert(bytes.size() == kHeaderBytes.size() && "Valid buffer required");
+
+        // Reset for next iteration
+        const auto kHeaderData{HeaderSection::deserializeBytes(kHeaderBytes)};
+        listener_.headerFound(kHeaderData);
+        assert(!segmentExtractor_.isMidExtraction() && "Segment extractor should be ready for new cycle");
     }
 
-    void proccessHeaderBytes()
+    void update()
     {
-        // Reset for next iteration
-        const auto kHeaderData{HeaderSection::deserializeBytes(headerBytes_)};
-        listener_.headerFound(kHeaderData);
+        segmentExtractor_.update();
     }
 
 private:
@@ -60,13 +62,7 @@ private:
     ByteQueue& queue_; 
     HeaderFoundListener& listener_;
 
-    int headerByteIndex_{0};
-    HeaderBytes headerBytes_{};
-
-    void resetHeaderExtraction()
-    {
-        headerByteIndex_ = 0;
-    }
+    DynamicSegmentExtractor segmentExtractor_{queue_, *this, kHeaderByteCountMaxIndex + 1};
 };
 }
 #endif
