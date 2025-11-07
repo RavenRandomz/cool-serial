@@ -67,7 +67,10 @@ public:
     void setSegmentSize(int size)
     {
         assert(size >= 1 && "Invalid segment size");
+        assert(!isMidExtraction() && "In middle of extraction");
         maxSegmentIndex_ = size - 1;
+        
+        segmentBytes_.resize(size);
     }
 
     bool isMidExtraction()
