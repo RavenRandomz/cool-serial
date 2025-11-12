@@ -46,7 +46,7 @@ namespace coolSerial
          * Turns your data into a CoolSerial compliant
          * serial message!
          */
-        CoolMessage(const Bytes&& data, Byte dataType)
+        CoolMessage(const Bytes& data, Byte dataType)
         {
             assert(data.size() <= kMaxDataSize);
             // Add Start of Frame
