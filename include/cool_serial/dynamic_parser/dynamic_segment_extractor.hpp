@@ -19,7 +19,7 @@ namespace coolSerial
 class DynamicSegmentExtractor
 {
 public:
-    DynamicSegmentExtractor(ByteQueue& queue, SegmentFoundListener& listener, int segmentSize)
+    DynamicSegmentExtractor(ByteQueue& queue, SegmentFoundListener& listener, int segmentSize = 1)
         :
         queue_{queue},
         listener_{listener}
