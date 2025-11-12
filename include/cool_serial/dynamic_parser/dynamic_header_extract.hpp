@@ -1,4 +1,5 @@
 #ifndef COOL_SERIAL_DYNAMIC_PARSER_DYNAMIC_HEADER_EXTRACT_HPP
+
 #define COOL_SERIAL_DYNAMIC_PARSER_DYNAMIC_HEADER_EXTRACT_HPP
 
 #include "cool_serial/byte_queue.hpp"
@@ -7,7 +8,6 @@
 
 #include "cool_serial/dynamic_parser/dynamic_segment_extractor.hpp"
 #include "cool_serial/dynamic_parser/segment_found_listener.hpp"
-#include <cassert>
 
 namespace coolSerial
 {
@@ -31,9 +31,6 @@ public:
         listener_{listener}
     {}
 
-    /**
-     * The segmentExractor will call this function when it has located a segment.
-     */
     void segmentFound(const Bytes& bytes) override
     {
         const HeaderBytes kHeaderBytes{
@@ -42,13 +39,11 @@ public:
             bytes[2],
             bytes[3]
         };
-
-        assert(bytes.size() == kHeaderBytes.size() && "Valid buffer required");
+        assert(bytes.size() == kHeaderBytes.size() && "Valid header size required");
 
         // Reset for next iteration
         const auto kHeaderData{HeaderSection::deserializeBytes(kHeaderBytes)};
         listener_.headerFound(kHeaderData);
-        assert(!segmentExtractor_.isMidExtraction() && "Segment extractor should be ready for new cycle");
     }
 
     void update()
@@ -56,13 +51,24 @@ public:
         segmentExtractor_.update();
     }
 
+    void proccessHeaderBytes()
+    {
+    }
+
+
 private:
     static const int kHeaderByteCountMaxIndex{3};
 
     ByteQueue& queue_; 
     HeaderFoundListener& listener_;
 
+    int headerByteIndex_{0};
     DynamicSegmentExtractor segmentExtractor_{queue_, *this, kHeaderByteCountMaxIndex + 1};
+
+    void resetHeaderExtraction()
+    {
+        segmentExtractor_.resetExtraction();
+    }
 };
 }
 #endif
