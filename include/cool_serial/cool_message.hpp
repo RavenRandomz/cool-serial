@@ -18,6 +18,8 @@ namespace coolSerial
     {
         Byte dataType;
         Bytes data;
+
+        bool operator==(const CoolMessageData&) const = default;
     };
 
     /**
