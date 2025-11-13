@@ -51,10 +51,6 @@ public:
         segmentExtractor_.update();
     }
 
-    void proccessHeaderBytes()
-    {
-    }
-
 
 private:
     static const int kHeaderByteCountMaxIndex{3};
