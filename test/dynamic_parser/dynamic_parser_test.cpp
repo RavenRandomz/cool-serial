@@ -150,5 +150,48 @@ TEST(DynamicParser, ReallyFragmentedDeserialization)
 
 
 }
+
+/**
+ * Check that red herrring data is not extracted
+ */
+TEST(DynamicParser, extraData)
+{
+    // A partial buffer will be fed each time
+    // [ 89, 0, 10, 0, 57, db, f9, e, 40, 27, a0, a8, c8, 1b, f5, 10, d, eb, dc, e0, 40, ]
+    // Partial header with SOF
+    Bytes partialHeader{ 0x84, 0x0, 0x10};
+    Bytes restOfHeader{ 0x0, 0x57};
+    // Everythin after 0x40 is a red herring
+    Bytes halfOfData{ 0xdb, 0xf9, 0xe, 0x40};
+    Bytes redHerring{ 0x84,0xdb, 0xf9, 0xe, 0x40};
+    Bytes finalHalfOfData{0x27, 0xa0, 0xa8, 0xc8, 0x1b, 0xf5, 0x10, 0xd, 0xeb, 0xdc, 0xe0, 0x40};
+
+    const Bytes kFullData{0xdb, 0xf9, 0xe, 0x40, 0x27, 0xa0, 0xa8, 0xc8, 0x1b, 0xf5, 0x10, 0xd, 0xeb, 0xdc, 0xe0, 0x40};
+
+    ByteQueue testQueue{};
+
+    DataFoundListenerMock dataListener{};
+    const CoolMessageData kExpected{0, kFullData};
+    EXPECT_CALL(dataListener, dataFound(kExpected));
+
+    // Test the actual parser
+    DynamicParser parser{testQueue, dataListener};
+
+    addBytesToByteQueue(partialHeader, testQueue);
+    parser.update();
+
+    addBytesToByteQueue(restOfHeader, testQueue);
+    parser.update();
+
+    addBytesToByteQueue(halfOfData, testQueue);
+    parser.update();
+
+    addBytesToByteQueue(finalHalfOfData, testQueue);
+    addBytesToByteQueue(redHerring, testQueue);
+    parser.update();
+
+    // The queue should have th red herring data
+    EXPECT_FALSE(testQueue.empty());
+}
 }
 
