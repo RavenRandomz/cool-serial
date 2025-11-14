@@ -18,13 +18,7 @@ namespace coolSerial
 class IDataHandler
 {
 public:
-    /**
-     * The default is a blank so that a collection of
-     * DataHandlers can be instantiated.
-     *
-     * This null behavior does make sense
-     */
-    virtual void handleData(const Bytes& bytes) {}
+    virtual void handleData(const Bytes& bytes) = 0;
     virtual ~IDataHandler() {}
 };
 }
