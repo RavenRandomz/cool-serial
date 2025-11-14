@@ -30,5 +30,13 @@ TEST(DataRouter, correctRouting)
 
     EXPECT_CALL(handler0, handleData(bytes0));
     router.dataFound(data0);
+
+    // Check if it will call a different handler with different expected data
+    Bytes bytes5{3,2,3,4,5, 4, 2, 2};
+
+    CoolMessageData data5{5, bytes5};
+
+    EXPECT_CALL(handler5, handleData(bytes5));
+    router.dataFound(data5);
 }
 }
