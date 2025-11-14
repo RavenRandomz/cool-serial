@@ -81,6 +81,19 @@ private:
     {
         state_ = headerExtract_;
     }
+
+    void headerFound(const HeaderData& headerData) override
+    {
+        if (headerData.isValid())
+        {
+            dataExtract_.setDataExtractionInfo(headerData.dataInfo);
+            state_ = dataExtract_;
+        }
+        else
+        {
+            state_ = startOfFrameSearch_;
+        }
+    }
 };
 }
 #endif
