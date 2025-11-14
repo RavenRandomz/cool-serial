@@ -47,7 +47,7 @@ private:
         }
     };
 
-    class HeaderExtract: public State, public DynamicHeaderExtract 
+    class HeaderExtract : public State, public DynamicHeaderExtract 
     {
     public:
         using DynamicHeaderExtract::DynamicHeaderExtract;
@@ -57,7 +57,7 @@ private:
         }
     };
 
-    class DataExtract: public State, public DynamicDataExtract
+    class DataExtract : public State, public DynamicDataExtract
     {
     public:
         using DynamicDataExtract::DynamicDataExtract;
@@ -71,6 +71,7 @@ private:
     DataFoundListener& dataFoundListener_;
 
     StartOfFrameSearch startOfFrameSearch_{byteBuffer_, *this};
+    HeaderExtract headerExtract_{byteBuffer_, *this};
 
     std::reference_wrapper<State> state_{startOfFrameSearch_};
 };
