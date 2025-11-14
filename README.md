@@ -10,6 +10,13 @@ Header Section
 2. Length uint_16 byte least significat
 3. Message type byte : types defined by user
 4. CRC8 for bytes 1-3
+CRC8/SMBUS, specifically:
+check  - 0xF4
+poly   - 0x07
+init   - 0x00
+refin  - false
+refout - true
+xorout - 0x00
 
 Data Section
 -----------
