@@ -6,6 +6,7 @@
 #include "cool_serial/dynamic_parser/dynamic_data_extract.hpp"
 #include "cool_serial/dynamic_parser/dynamic_header_extract.hpp"
 #include "cool_serial/dynamic_parser/data_found_listener.hpp"
+#include <cool_serial/dynamic_parser/header_found_listener.hpp>
 #include <cool_serial/dynamic_parser/segment_found_listener.hpp>
 #include <cool_serial/dynamic_parser/start_of_frame_found_listener.hpp>
 #include <functional>
@@ -20,7 +21,7 @@ namespace coolSerial
  *
  * Listeners can be attached.
  */
-class DynamicParser : public StartOfFrameFoundListener, public SegmentFoundListener, public DataFoundListener
+class DynamicParser : public StartOfFrameFoundListener, public HeaderFoundListener, public DataFoundListener
 {
 public:
     void update()
