@@ -9,7 +9,6 @@
 #include <cool_serial/dynamic_parser/header_found_listener.hpp>
 #include <cool_serial/dynamic_parser/segment_found_listener.hpp>
 #include <cool_serial/dynamic_parser/start_of_frame_found_listener.hpp>
-#include <functional>
 
 namespace coolSerial
 {
