@@ -158,7 +158,6 @@ namespace coolSerial
                 {
 
                     headerBytes_[headerByteIndex_] = parser_.getNextPoppedByte();
-                    std::cout << headerByteIndex_;
 
                     if(headerByteIndex_ == kHeaderByteCountMaxIndex)
                     {
