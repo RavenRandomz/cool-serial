@@ -8,6 +8,7 @@
 #include "cool_serial/dynamic_parser/data_found_listener.hpp"
 #include <cool_serial/dynamic_parser/segment_found_listener.hpp>
 #include <cool_serial/dynamic_parser/start_of_frame_found_listener.hpp>
+#include <functional>
 
 namespace coolSerial
 {
@@ -66,7 +67,11 @@ private:
     };
 
     ByteQueue& byteBuffer_;
-    DataFoundListener& dataFounListener_;
+    DataFoundListener& dataFoundListener_;
+
+    StartOfFrameSearch startOfFrameSearch_{byteBuffer_, *this};
+
+    std::reference_wrapper<State> state_{startOfFrameSearch_};
 };
 }
 #endif
