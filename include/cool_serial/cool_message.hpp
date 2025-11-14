@@ -16,7 +16,7 @@ namespace coolSerial
      */
     struct CoolMessageData
     {
-        Byte dataType;
+        Byte type;
         Bytes data;
 
         bool operator==(const CoolMessageData&) const = default;
