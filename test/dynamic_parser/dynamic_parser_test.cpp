@@ -79,6 +79,9 @@ TEST(DynamicParser, continousDeserilization)
     ByteQueue testQueue{};
 
     DataFoundListenerMock dataListener{};
+    const CoolMessageData kExpected{0, kFullData};
+    EXPECT_CALL(dataListener, dataFound(kExpected));
+
     // Test the actual parser
     DynamicParser parser{testQueue, dataListener};
 
@@ -94,9 +97,9 @@ TEST(DynamicParser, continousDeserilization)
     addBytesToByteQueue(finalHalfOfData, testQueue);
     parser.update();
 
+    EXPECT_TRUE(testQueue.empty());
 
-    const CoolMessageData kExpected{0, kFullData};
-    EXPECT_CALL(dataListener, dataFound(kExpected));
+
 
 }
 
