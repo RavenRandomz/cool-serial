@@ -1,3 +1,6 @@
+#ifndef COOL_SERIAL_DATA_HANDLER_I_DATA_HANDLER_HPP
+#define COOL_SERIAL_DATA_HANDLER_I_DATA_HANDLER_HPP
+
 #include "cool_serial/bytes.hpp"
 
 namespace coolSerial
@@ -25,3 +28,4 @@ public:
     virtual ~IDataHandler() {}
 };
 }
+#endif

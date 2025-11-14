@@ -1,3 +1,5 @@
+#ifndef COOL_SERIAL_DATA_HANDLER_HANDLER_MAP_HPP
+#define COOL_SERIAL_DATA_HANDLER_HANDLER_MAP_HPP
 #include <unordered_map>
 
 #include "cool_serial/data_handler/idata_handler.hpp"
@@ -11,3 +13,4 @@ namespace coolSerial
      */
     using HandlerMap = std::unordered_map<coolSerial::Byte, std::reference_wrapper<IDataHandler>>;
 }
+#endif

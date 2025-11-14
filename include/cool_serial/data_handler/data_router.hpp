@@ -1,3 +1,6 @@
+#ifndef COOL_SERIAL_DATA_HANDLER_DATA_ROUTER_HPP
+#define COOL_SERIAL_DATA_HANDLER_DATA_ROUTER_HPP
+
 #include "cool_serial/data_handler/handler_map.hpp"
 #include "cool_serial/dynamic_parser/data_found_listener.hpp"
 
@@ -29,3 +32,4 @@ namespace coolSerial
         HandlerMap handlerMap_;
     };
 }
+#endif
