@@ -56,7 +56,7 @@ namespace coolSerial::coolParserTest
         parser.update();
         CoolMessageData recoveredData{parser.getCurrentMessage()};
 
-        EXPECT_EQ(recoveredData.dataType, Byte{0});
+        EXPECT_EQ(recoveredData.typ, Byte{0});
         EXPECT_EQ(recoveredData.data, kMessageData);
     }
 
@@ -120,7 +120,7 @@ namespace coolSerial::coolParserTest
         EXPECT_FALSE(parser.currentMessageProcessed());
         CoolMessageData recoveredData{parser.getCurrentMessage()};
 
-        EXPECT_EQ(recoveredData.dataType, Byte{0});
+        EXPECT_EQ(recoveredData.typ, Byte{0});
         EXPECT_EQ(recoveredData.data, kMessageData);
     }
 
@@ -167,7 +167,7 @@ namespace coolSerial::coolParserTest
 
         CoolMessageData recoveredData{parser.getCurrentMessage()};
 
-        EXPECT_EQ(recoveredData.dataType, Byte{0});
+        EXPECT_EQ(recoveredData.typ, Byte{0});
         EXPECT_EQ(recoveredData.data, kMessageData);
     }
 
