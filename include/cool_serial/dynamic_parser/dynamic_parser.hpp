@@ -75,6 +75,12 @@ private:
     DataExtract dataExtract_ {byteBuffer_, *this};
 
     std::reference_wrapper<State> state_{startOfFrameSearch_};
+
+    // State change logic
+    void startOfFrameFound() override
+    {
+        state_ = headerExtract_;
+    }
 };
 }
 #endif
