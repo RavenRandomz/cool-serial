@@ -24,6 +24,12 @@ namespace coolSerial
 class DynamicParser : public StartOfFrameFoundListener, public HeaderFoundListener, public DataFoundListener
 {
 public:
+    DynamicParser(ByteQueue& byteBuffer, DataFoundListener& listener):
+        dataFoundListener_{listener},
+        startOfFrameSearch_{byteBuffer, *this},
+        headerExtract_{byteBuffer, *this},
+        dataExtract_ {byteBuffer, *this}
+    {}
     void update()
     {
     }
@@ -67,12 +73,11 @@ private:
         }
     };
 
-    ByteQueue& byteBuffer_;
     DataFoundListener& dataFoundListener_;
 
-    StartOfFrameSearch startOfFrameSearch_{byteBuffer_, *this};
-    HeaderExtract headerExtract_{byteBuffer_, *this};
-    DataExtract dataExtract_ {byteBuffer_, *this};
+    StartOfFrameSearch startOfFrameSearch_;
+    HeaderExtract headerExtract_;
+    DataExtract dataExtract_;
 
     std::reference_wrapper<State> state_{startOfFrameSearch_};
 
@@ -93,6 +98,12 @@ private:
         {
             state_ = startOfFrameSearch_;
         }
+    }
+
+    void dataFound(const CoolMessageData& data) override
+    {
+        dataFoundListener_.dataFound(data);
+        state_ = startOfFrameSearch_;
     }
 };
 }
