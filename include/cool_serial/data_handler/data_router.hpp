@@ -36,7 +36,7 @@ namespace coolSerial
 
         void dataFound(const CoolMessageData& data)
         {
-            IDataHandler& handler{handlerMap_.at(data.type).get()};
+            IDataHandler& handler{handlerMap_.at(data.dataType).get()};
             handler.handleData(data.data);
         }
     private:

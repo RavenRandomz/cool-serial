@@ -44,7 +44,7 @@ namespace coolSerial
                     (
                         CoolMessageData
                         {
-                            .type = dataType_,
+                            .dataType = dataType_,
                             .data = std::move(messageData_)
                         }
                     );
