@@ -138,6 +138,9 @@ TEST(DynamicParser, ReallyFragmentedDeserialization)
     DataFoundListenerMock dataListener{};
     DynamicParser parser{simulatedQueue, dataListener};
 
+    const CoolMessageData kExpected{0, kMessageData};
+    EXPECT_CALL(dataListener, dataFound(kExpected));
+
     while(!testQueue.empty())
     {
         simulatedQueue.push(testQueue.front());
@@ -146,8 +149,6 @@ TEST(DynamicParser, ReallyFragmentedDeserialization)
     }
 
 
-    const CoolMessageData kExpected{0, kMessageData};
-    EXPECT_CALL(dataListener, dataFound(kExpected));
 }
 }
 
