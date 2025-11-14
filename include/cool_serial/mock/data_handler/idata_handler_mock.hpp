@@ -7,6 +7,7 @@ namespace coolSerial
 {
     class IDataHandlerMock : public IDataHandler
     {
+    public:
         MOCK_METHOD(void, handleData, (const Bytes& bytes), (override));
     };
 }
