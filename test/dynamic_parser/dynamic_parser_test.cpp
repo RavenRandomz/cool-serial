@@ -147,8 +147,6 @@ TEST(DynamicParser, ReallyFragmentedDeserialization)
         testQueue.pop();
         parser.update();
     }
-
-
 }
 
 /**
@@ -192,6 +190,85 @@ TEST(DynamicParser, extraData)
 
     // The queue should have th red herring data
     EXPECT_FALSE(testQueue.empty());
+}
+
+/**
+ *
+ * Check that one and only one message is extracted as well as the extraction of multiple
+ * messages
+ */
+TEST(DynamicParser, MultipleMessage)
+{
+    // Construct data
+    struct TestStruct
+    {
+        float x;
+        float y;
+        double z;
+    };
+
+    TestStruct data
+    {
+        .x = 2.234,
+        .y = -345345.234234,
+        .z = 34535.345345
+    };
+
+    Bytes kDataBytes{cista::serialize(data)};
+
+    // The 3rd header section byte (index 3) must equal 0
+    CoolMessage message{std::move(kDataBytes), Byte{0}};
+
+    Bytes kMessageFrame{message.getFrame()};
+
+    const Bytes kMessageData{kMessageFrame.begin() + 5, kMessageFrame.end()};
+    EXPECT_EQ(kMessageData, kDataBytes);
+
+    ByteQueue testQueue{std::deque<Byte>{kMessageFrame.begin(), kMessageFrame.end()}};
+
+
+    ByteQueue simulatedQueue{};
+    // Test the actual parser
+    DataFoundListenerMock dataListener{};
+    DynamicParser parser{simulatedQueue, dataListener};
+
+    const CoolMessageData kExpected{0, kMessageData};
+    EXPECT_CALL(dataListener, dataFound(kExpected));
+
+    while(!testQueue.empty())
+    {
+        simulatedQueue.push(testQueue.front());
+        testQueue.pop();
+        parser.update();
+    }
+
+    TestStruct data2
+    {
+        .x = 5,
+        .y = -345.34,
+        .z = 99.39
+    };
+
+    Bytes kDataBytes2{cista::serialize(data)};
+
+    // The 3rd header section byte (index 3) must equal 0
+    CoolMessage message2{std::move(kDataBytes2), Byte{0}};
+
+    Bytes kMessageFrame2{message.getFrame()};
+
+    const Bytes kMessageData2{kMessageFrame.begin() + 5, kMessageFrame.end()};
+    const CoolMessageData kExpected2{0, kMessageData2};
+
+    EXPECT_CALL(dataListener, dataFound(kExpected2));
+
+    ByteQueue testQueue2{std::deque<Byte>{kMessageFrame2.begin(), kMessageFrame2.end()}};
+
+    while(!testQueue2.empty())
+    {
+        simulatedQueue.push(testQueue2.front());
+        testQueue2.pop();
+        parser.update();
+    }
 }
 }
 
