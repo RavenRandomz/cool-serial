@@ -1,4 +1,5 @@
 #include "cool_serial/data_handler/handler_map.hpp"
+#include "cool_serial/dynamic_parser/data_found_listener.hpp"
 
 namespace coolSerial
 {
@@ -9,7 +10,7 @@ namespace coolSerial
      *
      * Make sure that all protocols that are being recieved have a handler.
      */
-    class DataRouter
+    class DataRouter : public DataFoundListener
     {
     public:
         DataRouter(const HandlerMap& handlerMap):
@@ -18,6 +19,12 @@ namespace coolSerial
 
         DataRouter() : handlerMap_{}
         {}
+
+        void dataFound(const CoolMessageData& data)
+        {
+            IDataHandler& handler{handlerMap_[data.dataType].get()};
+            handler.handleData(data.data);
+        }
     private:
         HandlerMap handlerMap_;
     };
