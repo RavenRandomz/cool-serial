@@ -2,10 +2,7 @@
 
 namespace coolSerial
 {
-class IDataHandler
-{
-public:
-    /**
+/**
      * This class takes a series of bytes, it is assigned the bytes.
      *
      * The implementer should correspond to a specific message code.
@@ -15,6 +12,9 @@ public:
      *
      * CoolSerial supports up to 256 different protocols.
      */
+class IDataHandler
+{
+public:
     virtual void handleData(const Bytes& bytes) = 0;
     virtual ~IDataHandler() {}
 };
