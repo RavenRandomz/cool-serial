@@ -19,6 +19,32 @@ namespace coolSerial
  * has been recovered.
  *
  * Listeners can be attached.
+ *
+ * This is capable of searching for a coolSerialMessage which is not
+ * fully transmitted into a buffer
+ *
+ * This functions as a state machine:
+ *
+ * This starts by searching for the start of frame
+ * Once it is found, it attempts to extract a header
+ * (next 4 bytes).
+ *
+ * Each update will process all bytes within the buffer
+ *
+ * If the header is not valid, it returns to an SOF search. A false alarm for the proper header
+ * has a 1/256 chance of occuring.
+ *
+ * If the header is valid, it will use the data type as well as the data length to obtain the following bytes.
+ *
+ * Once all bytes have been obtained, it informs a DataFoundListener.
+ *
+ * The advantage of the Observer pattern is that it doesn't have to be checked for a new message every update
+ * (unlike the original ContinuousParser)he data length to obtain the following bytes.
+ *
+ * Once all bytes have been obtained, it informs a DataFoundListener.
+ *
+ * The advantage of the Observer pattern is that it doesn't have to be checked for a new message every update
+ * (unlike the original ContinuousParser).
  */
 class DynamicParser : public StartOfFrameFoundListener, public HeaderFoundListener, public DataFoundListener
 {
