@@ -72,6 +72,7 @@ private:
 
     StartOfFrameSearch startOfFrameSearch_{byteBuffer_, *this};
     HeaderExtract headerExtract_{byteBuffer_, *this};
+    DataExtract dataExtract_ {byteBuffer_, *this};
 
     std::reference_wrapper<State> state_{startOfFrameSearch_};
 };
