@@ -42,4 +42,24 @@ TEST(DynamicSegmentExtractor, basicExtraction)
     EXPECT_CALL(listener, segmentFound(kTestBytes));
     extractor.update();
 }
+
+/**
+ * Test for successful extraction with a buffer that has an equal amount to the desired
+ * size but ignoring extra bytes
+ */
+TEST(DynamicSegmentExtractor, extraByteIgnore)
+{
+    const Bytes kTestBytes{1,2,3,4,5,6, 7, 8};
+    const Bytes kExpectedBytes{1,2,3,4};
+    const int kSegmentSize{static_cast<int>(kExpectedBytes.size())};
+    ByteQueue queue{};
+    queue.addBytes(kTestBytes);
+
+    testing::StrictMock<SegmentFoundListenerMock> listener{};
+
+    DynamicSegmentExtractor extractor{queue, listener, kSegmentSize};
+
+    EXPECT_CALL(listener, segmentFound(kExpectedBytes));
+    extractor.update();
+}
 }
