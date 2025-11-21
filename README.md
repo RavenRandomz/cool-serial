@@ -123,6 +123,19 @@ contain the header section of a coolSerial message).
 
 ### Bytes
 
+This is an alias for std::vector<Byte>;
+
+### Byte
+
+Byte is an alias for unsigned char
+
+## Transmission Classes
+
+These classes are meant to relay data to and from cool-seril
+
+### ByteQueue
+Byte Queue adds syntactic sugar to a standard Queue
+
 ```cpp
 ByteQueue buffer{};
 
@@ -141,16 +154,6 @@ buffer.hasNextByte();
 Check if it is empty or not.
 
 
-### Byte
-
-Byte is an alias for unsigned char
-
-## Transmission Classes
-
-
-
-### ByteQueue
-Byte Queue adds syntactic sugar to a standard Queue
 
 ## Reading Classes
 
