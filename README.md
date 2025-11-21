@@ -200,8 +200,46 @@ It is kept for backwards compatibility reasons. It will be removed in v2.0.0
 
 ## Handling Classes
 
-## IDataHandler
-## DataRouter
+These classes take data which has been found from a parser and send them to 
+whatever class is meant to handle them.
+
+### IDataHandler
+
+Any class that implements handleData(const Bytes& data);
+
+It can update a currentClass (currentFloat for example) or pass the deserialized 
+data (if it deserialized the data) onto some listeners.
+
+### DataMap
+
+```cpp
+testing::StrictMock<IDataHandlerMock> handler0{};
+testing::StrictMock<IDataHandlerMock> handler5{};
+
+HandlerMap testMap
+{
+    {0, handler0},
+    {5, handler5}
+};
+```
+Note that in its constructor, it maps a uint\_8 to a 
+std::reference\_wrapper<IDataHandler>. So you don't have to pass by address.
+
+### DataRouter
+
+Data Router takes a handler map. It also is a DataFoundListenerWhenever it has 
+```
+DataRouter router{testMap};
+```
+DataRouter requires a handler map which tells it which handlers to call 
+handleData(const Bytes& data). This is triggered when it's dataFound() function 
+has been called. This can be manually called, but 
+
+```
+handler.dataFound(data);
+```
+Whatever handler is associated to the data's type in the test map will be 
+called. The data's data (the actual bytes) will be 
 
 # Basic Operations
 
@@ -210,11 +248,60 @@ This provides an overview on how to use the CoolSerial classes
 
 ## Writing a message
 
+
+```cpp
+struct TestStruct
+{
+    float x;
+    float y;
+    double z;
+};
+
+TestStruct data
+{
+    .x = 2.234,
+    .y = -345345.234234,
+    .z = 34535.345345
+};
+
+Bytes kDataBytes{cista::serialize(data)};
+
+CoolMessage message{std::move(kDataBytes), Byte{0}};
+
+const Bytes kMessageFrame{message.getFrame()};
+```
+Note that cista is a serialization/deserialization library.
+
+CoolMessage requires a data type (uint8) and the data itself (bytes).
 ## Sending a message
+You will need a uart library to push bytes from a message frame:
+
+for example, assuming the function is uart::tx::sendbyte(Byte); (this will 
+depend on which serial communication library you use).
+```
+for (const kByte& byte : kMessageFrame)
+{
+    uart::tx::sendByte(byte);
+}
+```
+
 ## Receiving a message
-## Handling a data
+Assuming the function is uart::rx::popByte() and uart::rx::byteAvailable();
+```
+while (uart::rx::byterAvailable())
+{
+    // a coolSerial buffer
+    buffer.push(uart::rx::popByte());
+}
+```
+
+From there, if the buffer is passed via reference to a DynamicParser, the 
+dynamic parser can send it to a DataFoundListener. For your convenience, 
+DataRouter can take maps
 
 ## Handling Incoming Messages
 
-
-
+As long as a class implements DataFoundListener (in dynamic\_parser 
+subdirectory), it can be passed by reference to a DynamicParser's constructor. 
+Usually, you would want to use the premade well-tested DataRouter. But if you 
+want to get adventurous, you can implement your own classes, too.
