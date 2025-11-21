@@ -157,8 +157,46 @@ Check if it is empty or not.
 
 ## Reading Classes
 
+These classes are involved in taking a stream of bytes which may or may not be a 
+complete cool serial frame.
+
 ### DynamicParser
+It uses a state machine design on whether or not to search for SOF, attempt to 
+extract a header, or complete data. Update is reguarly called. 
+
+Whenever it extracts a cool serial message, it will forward it to that object to 
+handle.
+
+```cpp
+ByteQueue buffer{};
+DataRouter router{};
+
+// pass by reference
+DynamicParser parser{buffer, dataRouter};
+```
+Dynamic parser requires a ByteQueue in its constructor. In addition, it requires 
+a DataFoundListener which it will call void dataFound(CoolMessageData).
+
+```cpp
+// Assume the buffer has been filled with data but not enough
+parser.update()
+
+// the router will not have its dataFound() called.
+
+// Assume at least the rest of the bytes has been added to the buffer
+
+parser.update()
+```
+
+So every "program cyle" the parser will have update() called to process whether 
+is in the buffer. Note that this will cause the buffer to empty bytes.
 ### ContinuousParser
+
+This is a deprecated implementation. It requires the user to reguarly check for 
+if the message has been processed or not every update(). This is very wasteful 
+as it is unlikely for all of the frame's bytes to be within the ByteBuffer.
+
+It is kept for backwards compatibility reasons. It will be removed in v2.0.0
 
 ## Handling Classes
 
