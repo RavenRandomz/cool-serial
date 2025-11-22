@@ -7,7 +7,7 @@ config = Configuration(
     init_value = 0x00,
     reverse_input = False,
     reverse_output = True,
-    xor_output = 0x00
+    xor_output = 0x00,
 )
 
 calculator = Calculator(config)
