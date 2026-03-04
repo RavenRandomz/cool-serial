@@ -24,7 +24,7 @@ protocls: Cool Serial and another which defines how that data section works.
     * poly   - 0x07
     * init   - 0x00
     * refin  - false
-    * refout - true
+    * refout - false
     * xorout - 0x00
 
 ### Data Section
